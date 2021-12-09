@@ -1,0 +1,14 @@
+edition = "2021"
+unstable_features = true
+
+chain_width = 80
+array_width = 80
+fn_call_width = 80
+blank_lines_upper_bound = 2
+
+use_field_init_shorthand = true
+match_block_trailing_comma = true
+overflow_delimited_expr = true
+
+group_imports = "StdExternalCrate"
+imports_granularity = "Module"

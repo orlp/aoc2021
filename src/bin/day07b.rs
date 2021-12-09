@@ -1,6 +1,7 @@
+use std::cmp;
+
 use anyhow::Result;
 use itertools::Itertools;
-use std::cmp;
 
 /*
     Let fuel(a) = total fuel cost to align to position a.
@@ -22,10 +23,13 @@ use std::cmp;
 */
 
 fn cost(positions: &[i64], a: i64) -> i64 {
-    positions.iter().map(|p| {
-        let d = (p - a).abs();
-        d * (d+1) / 2
-    }).sum::<i64>()
+    positions
+        .iter()
+        .map(|p| {
+            let d = (p - a).abs();
+            d * (d + 1) / 2
+        })
+        .sum::<i64>()
 }
 
 fn main() -> Result<()> {

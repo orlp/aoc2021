@@ -1,6 +1,7 @@
-use anyhow::{Context, Ok, Result};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+
+use anyhow::{Context, Ok, Result};
 
 fn main() -> Result<()> {
     let input = BufReader::new(File::open("inputs/day08.txt")?);

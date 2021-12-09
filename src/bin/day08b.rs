@@ -1,13 +1,14 @@
-use anyhow::{Context, Ok, Result};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+
+use anyhow::{Context, Ok, Result};
 
 fn parse_digit_segments(s: &str) -> u8 {
     // Parse seven segments into bitset.
     s.bytes().map(|b| 1 << (b - b'a')).sum()
 }
 
-fn decode_display<I: IntoIterator<Item=u8> + Clone>(digits: I, display: I) -> usize {
+fn decode_display<I: IntoIterator<Item = u8> + Clone>(digits: I, display: I) -> usize {
     // Decode in two passes, we can directly identify the 1 and 4 using just the
     // number of segments and the rest using the overlap with 1 and 4.
     let mut decoded = [0; 10];
@@ -35,9 +36,10 @@ fn decode_display<I: IntoIterator<Item=u8> + Clone>(digits: I, display: I) -> us
         }
     }
 
-    display.into_iter().fold(0, |sum, digit| {
-        10 * sum + decoded.iter().position(|d| *d == digit).unwrap()
-    })
+    display
+        .into_iter()
+        .map(|digit| decoded.iter().position(|d| *d == digit).unwrap())
+        .fold(0, |sum, digit| 10 * sum + digit)
 }
 
 fn main() -> Result<()> {

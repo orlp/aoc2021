@@ -26,7 +26,8 @@ fn main() -> Result<()> {
     let input = BufReader::new(File::open("inputs/day03.txt")?);
     let mut lines = input.lines().map(|l| Ok(l?)).collect::<Result<Vec<_>>>()?;
     let oxygen = partition_recursive(&mut lines[..], 0, true).context("could not find oxygen")?;
-    let co2_scrubber = partition_recursive(&mut lines[..], 0, false).context("could not find co2 scrubber")?;
+    let co2_scrubber =
+        partition_recursive(&mut lines[..], 0, false).context("could not find co2 scrubber")?;
     println!("{}", u64::from_str_radix(&oxygen, 2)? * u64::from_str_radix(&co2_scrubber, 2)?);
     Ok(())
 }
