@@ -1,6 +1,7 @@
 use anyhow::Result;
 use itertools::Itertools;
 
+
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day07.txt")?;
     let mut positions: Vec<i64> = input.trim().split(',').map(str::parse).try_collect()?;

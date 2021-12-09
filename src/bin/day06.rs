@@ -1,5 +1,6 @@
 use anyhow::Result;
 
+
 fn population_after(mut fish: [usize; 9], n: usize) -> usize {
     // Could be O(d^3 log(n)) with d = 9 fast matrix exponentiation or using
     // "An effficient formula for linear recurrences" by C. Fiduccia in

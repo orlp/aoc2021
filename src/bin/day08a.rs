@@ -12,6 +12,5 @@ fn main() -> Result<()> {
     });
 
     println!("{}", itertools::process_results(counts, |it| it.sum::<usize>())?);
-
     Ok(())
 }

@@ -6,6 +6,7 @@ use anyhow::{Context, Ok, Result};
 use itertools::Either::{Left, Right};
 use itertools::Itertools;
 
+
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 struct Point(i64, i64);
 
