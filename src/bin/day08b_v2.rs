@@ -17,6 +17,7 @@ use itertools::Itertools;
 */
 
 fn main() -> Result<()> {
+    #[rustfmt::skip]
     let signatures = HashMap::from([
         (42, 0), (17, 1), (34, 2), (39, 3), (30, 4),
         (37, 5), (41, 6), (25, 7), (49, 8), (45, 9),
