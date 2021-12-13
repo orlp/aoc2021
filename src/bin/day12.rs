@@ -12,27 +12,25 @@ fn count_paths<'a>(
 ) -> u64 {
     if from == to {
         1
-    } else {
-        edges
-            .get(from)
-            .map(|v| v.as_slice())
-            .unwrap_or_default()
+    } else if let Some(neighbors) = edges.get(from) {
+        neighbors
             .iter()
-            .filter_map(|next| {
+            .map(|next| {
                 let big_node = next.chars().all(|c| c.is_ascii_uppercase());
-                let unseen = !seen.contains(*next);
-                let twice_exception = !big_node && !unseen && allow_twice && !(*next == "start");
-                (big_node || unseen || twice_exception).then(|| {
+                if big_node || !seen.contains(*next) {
                     seen.insert(next);
-                    let res =
-                        count_paths(next, to, edges, &mut seen, allow_twice & !twice_exception);
-                    if !twice_exception {
-                        seen.remove(next);
-                    }
+                    let res = count_paths(next, to, edges, &mut seen, allow_twice);
+                    seen.remove(next);
                     res
-                })
+                } else if allow_twice && !(*next == "start") {
+                    count_paths(next, to, edges, &mut seen, false)
+                } else {
+                    0
+                }
             })
             .sum()
+    } else {
+        0
     }
 }
 
@@ -48,6 +46,5 @@ fn main() -> Result<()> {
     let mut seen = HashSet::from(["start"]);
     println!("{}", count_paths("start", "end", &edges, &mut seen, false));
     println!("{}", count_paths("start", "end", &edges, &mut seen, true));
-
     Ok(())
 }
