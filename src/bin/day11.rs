@@ -16,32 +16,30 @@ fn main() -> Result<()> {
     let mut flashed = HashSet::new();
     let mut step = 0usize;
     while flashed.len() as isize != width * height {
-        for i in flashed.drain() {
-            energy_levels[i] = 0;
+        if step <= 100 {
+            total100 += flashed.len();
         }
+        flashed.clear();
 
+        step += 1;
         let mut to_increase = itertools::iproduct!(0..width, 0..height).collect_vec();
         while let Some((x, y)) = to_increase.pop() {
             let i = (y * width + x) as usize;
             if !(x < 0 || x >= width || y < 0 || y >= height || flashed.contains(&i)) {
                 energy_levels[i] += 1;
                 if energy_levels[i] > 9 {
+                    energy_levels[i] = 0;
+                    flashed.insert(i);
                     #[rustfmt::skip]
                     to_increase.extend([(x - 1, y - 1), (x, y - 1), (x + 1, y - 1),
                                         (x - 1, y),                 (x + 1, y),
                                         (x - 1, y + 1), (x, y + 1), (x + 1, y + 1)]);
-                    flashed.insert(i);
                 }
             }
         }
-
-        step += 1;
-        if step <= 100 {
-            total100 += flashed.len();
-        }
     }
 
-    println!("part1: {}", total100 + step.saturating_sub(100) / 9);
+    println!("part1: {}", total100 + 100usize.saturating_sub(step) / 9);
     println!("part2: {}", step);
     Ok(())
 }
