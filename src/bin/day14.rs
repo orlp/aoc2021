@@ -5,7 +5,7 @@ use itertools::Itertools;
 
 
 fn parse_rule(rule: &str) -> Result<((u8, u8), u8)> {
-    let (from, to) = rule.split_once(" -> ").context("could not split rule")?;
+    let (from, to) = rule.trim().split_once(" -> ").context("could not split rule")?;
     if let (&[a, b], &[c]) = (from.as_bytes(), to.as_bytes()) {
         Ok(((a, b), c))
     } else {
