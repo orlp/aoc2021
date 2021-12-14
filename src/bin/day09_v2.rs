@@ -73,7 +73,7 @@ fn main() -> Result<()> {
         .enumerate()
         .filter(|(i, c)| c.parent == *i)
         .map(|c| c.1.size);
-    let result: usize = basins.map(|x| Reverse(x)).k_smallest(3).map(|r| r.0).product();
+    let result: usize = basins.map(Reverse).k_smallest(3).map(|r| r.0).product();
     println!("{}", result);
     Ok(())
 }

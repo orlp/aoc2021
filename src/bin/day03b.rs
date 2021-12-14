@@ -11,7 +11,7 @@ fn partition_recursive(v: &mut [String], i: usize, keep_most_common: bool) -> Op
         return v.get(0).cloned();
     }
 
-    let split = partition(&mut v[..], |s| s.bytes().nth(i).unwrap() == b'0');
+    let split = partition(&mut v[..], |s| *s.as_bytes().get(i).unwrap() == b'0');
     let zero_vs_one = (2 * split).cmp(&v.len());
     match (keep_most_common, zero_vs_one) {
         (true, Ordering::Less) | (true, Ordering::Equal) | (false, Ordering::Greater) => {

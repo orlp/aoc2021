@@ -7,7 +7,7 @@ fn count_paths<'a>(
     from: &'a str,
     to: &'a str,
     edges: &HashMap<&'a str, Vec<&'a str>>,
-    mut seen: &mut HashSet<&'a str>,
+    seen: &mut HashSet<&'a str>,
     allow_twice: bool,
 ) -> u64 {
     if from == to {
@@ -19,11 +19,11 @@ fn count_paths<'a>(
                 let big_node = next.chars().all(|c| c.is_ascii_uppercase());
                 if big_node || !seen.contains(*next) {
                     seen.insert(next);
-                    let res = count_paths(next, to, edges, &mut seen, allow_twice);
+                    let res = count_paths(next, to, edges, seen, allow_twice);
                     seen.remove(next);
                     res
-                } else if allow_twice && !(*next == "start") {
-                    count_paths(next, to, edges, &mut seen, false)
+                } else if allow_twice && *next != "start" {
+                    count_paths(next, to, edges, seen, false)
                 } else {
                     0
                 }
