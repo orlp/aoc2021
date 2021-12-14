@@ -14,6 +14,8 @@ fn parse_rule(rule: &str) -> Result<((u8, u8), u8)> {
 }
 
 fn solve(polymer: &[u8], rules: &HashMap<(u8, u8), u8>, steps: usize) -> usize {
+    // If the number of steps n were very large, we could solve in O(p^3 log(n)) steps using matrix
+    // exponentiation instead, where p is the number of potential pairs.
     let mut state: HashMap<(u8, u8), usize> = polymer.iter().copied().tuple_windows().counts();
     for _ in 0..steps {
         let mut new_state = HashMap::new();
