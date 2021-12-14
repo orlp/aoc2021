@@ -1,12 +1,13 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-use anyhow::{Context, Result};
+use anyhow::{Context, Result, Ok};
+use itertools::Itertools;
 
 
 fn main() -> Result<()> {
     let input = BufReader::new(File::open("inputs/day03.txt")?);
-    let lines = input.lines().map(|l| Ok(l?)).collect::<Result<Vec<_>>>()?;
+    let lines: Vec<String> = input.lines().map(|l| Ok(l?)).try_collect()?;
     let w = lines.first().context("empty input")?.len();
     let n = lines.len() as u64;
 
