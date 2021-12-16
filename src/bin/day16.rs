@@ -23,31 +23,32 @@ fn read_bits_be(mut n: usize, bytes: &[u8], bits_read: &mut usize) -> Result<u64
     Ok(res)
 }
 
-fn parse_literal(reader: &[u8], bits_read: &mut usize) -> Result<u64> {
+fn parse_literal(bytes: &[u8], bits_read: &mut usize) -> Result<u64> {
     let mut num = 0;
     let mut block = 0b10000;
     while block >> 4 != 0 {
-        block = read_bits_be(5, reader, bits_read)?;
+        block = read_bits_be(5, bytes, bits_read)?;
         num <<= 4;
         num += block & 0b1111;
     }
     Ok(num)
 }
 
-fn parse_packet(reader: &[u8], bits_read: &mut usize) -> Result<(u64, u64)> {
-    let mut version_sum = read_bits_be(3, reader, bits_read)?;
-    let type_id = read_bits_be(3, reader, bits_read)?;
+fn parse_packet(bytes: &[u8], bits_read: &mut usize) -> Result<(u64, u64)> {
+    let mut version_sum = read_bits_be(3, bytes, bits_read)?;
+    let type_id = read_bits_be(3, bytes, bits_read)?;
     if type_id == 4 {
-        return Ok((version_sum, parse_literal(reader, bits_read)?));
+        return Ok((version_sum, parse_literal(bytes, bits_read)?));
     }
 
-    let is_num_bits_mode = read_bits_be(1, reader, bits_read)? == 0;
-    let limit = read_bits_be(if is_num_bits_mode { 15 } else { 11 }, reader, bits_read)? as usize;
-    let mut value = None;
+    let is_num_bits_mode = read_bits_be(1, bytes, bits_read)? == 0;
+    let limit = read_bits_be(if is_num_bits_mode { 15 } else { 11 }, bytes, bits_read)? as usize;
     let mut limit_status = 0;
     let subpackets_start = *bits_read;
+    
+    let mut value = None;
     while limit_status < limit {
-        let (inner_version_sum, inner_value) = parse_packet(reader, bits_read)?;
+        let (inner_version_sum, inner_value) = parse_packet(bytes, bits_read)?;
         version_sum += inner_version_sum;
         value = match type_id {
             0 => Some(value.unwrap_or(0) + inner_value),
