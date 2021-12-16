@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-use anyhow::{Context, Result, Ok};
+use anyhow::{Context, Ok, Result};
 use itertools::Itertools;
 
 
