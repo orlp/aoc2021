@@ -34,6 +34,7 @@ fn main() -> Result<()> {
     let (xmin, xmax, ymin, ymax) =
         itertools::process_results(bounds, |it| it.collect_tuple())?.context("bad match count")?;
 
+    // Find valid ranges of steps for each possible y velocity.
     let mut global_y_peak = 0;
     let mut valid_step_ranges = Vec::new();
     for yv in ymin..=-ymin {
@@ -45,6 +46,7 @@ fn main() -> Result<()> {
     }
     let max_y_steps = valid_step_ranges.iter().map(|(_lo, hi, _is_x)| *hi).max().unwrap();
 
+    // Find valid ranges of steps for each possible x velocity.
     for xv in 1..=xmax {
         let (lo, hi) = bound_triangular_steps(xv, xmin, xmax);
         let stopping_point = xv * xv - xv * (xv - 1) / 2;
@@ -56,6 +58,7 @@ fn main() -> Result<()> {
         }
     }
 
+    // Find how often the above ranges intersect.
     valid_step_ranges.sort_by_key(|(lo, _hi, _is_x)| *lo);
     let mut open_ranges: [BinaryHeap<Reverse<i64>>; 2] = Default::default();
     let mut intersections = 0;
