@@ -45,7 +45,7 @@ fn parse_packet(bytes: &[u8], bits_read: &mut usize) -> Result<(u64, u64)> {
     let limit = read_bits_be(if is_num_bits_mode { 15 } else { 11 }, bytes, bits_read)? as usize;
     let mut limit_status = 0;
     let subpackets_start = *bits_read;
-    
+
     let mut value = None;
     while limit_status < limit {
         let (inner_version_sum, inner_value) = parse_packet(bytes, bits_read)?;

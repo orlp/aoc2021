@@ -12,9 +12,9 @@ use regex::Regex;
 
 fn bound_triangular_steps(v: i64, min: i64, max: i64) -> (i64, i64) {
     // Find bounds for t when min <= v*t - t*(t-1)/2 <= max.
-    // WolframAlpha gives us the solution - we take the first solution ('upwards')
-    // for // negative bounds, and the second ('downwards') for positive bounds
-    // on the parabola.
+    // WolframAlpha gives us the solution - we take the first solution
+    // ('upwards') for negative bounds, and the second ('downwards') for
+    // positive bounds, when viewed on the parabola.
     let t = |bound| {
         let sqrt = ((4 * v * v + 4 * v - 8 * bound + 1) as f64).sqrt();
         (-sqrt.copysign(bound as f64) + 2.0 * v as f64 + 1.0) / 2.0
