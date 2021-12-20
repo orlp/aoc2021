@@ -37,7 +37,7 @@ fn count_paths<'a>(
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day12.txt")?;
     let mut edges: HashMap<&str, Vec<&str>> = HashMap::new();
-    for line in input.trim().split('\n') {
+    for line in input.trim().lines() {
         let (a, b) = line.trim().split_once('-').context("line contains no edge")?;
         edges.entry(a).or_default().push(b);
         edges.entry(b).or_default().push(a);

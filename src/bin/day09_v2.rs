@@ -8,11 +8,16 @@ use itertools::Itertools;
 struct UnionFindNode {
     parent: usize,
     size: usize,
+    lowest: usize,
 }
 
 fn make_set(size: usize, nodes: &mut Vec<UnionFindNode>) -> usize {
     let idx = nodes.len();
-    nodes.push(UnionFindNode { parent: idx, size });
+    nodes.push(UnionFindNode {
+        parent: idx,
+        size,
+        lowest: usize::MAX,
+    });
     idx
 }
 
@@ -36,6 +41,7 @@ fn union(mut a: usize, mut b: usize, nodes: &mut [UnionFindNode]) -> usize {
         }
         nodes[b].parent = a;
         nodes[a].size += nodes[b].size;
+        nodes[a].lowest = nodes[a].lowest.min(nodes[b].lowest);
     }
     a
 }
@@ -47,7 +53,7 @@ fn main() -> Result<()> {
     let mut union_find = Vec::new();
     let mut prev_row = Vec::new();
     let mut cur_row = Vec::new();
-    for line in input.split('\n') {
+    for line in input.lines() {
         for (i, c) in line.trim().bytes().enumerate() {
             if c == b'9' {
                 cur_row.push(None);
@@ -62,18 +68,18 @@ fn main() -> Result<()> {
                 (None, None) => make_set(0, &mut union_find),
             };
             union_find[comp].size += 1;
+            union_find[comp].lowest = union_find[comp].lowest.min((c - b'0') as usize);
             cur_row.push(Some(comp));
         }
         core::mem::swap(&mut cur_row, &mut prev_row);
         cur_row.clear();
     }
 
-    let basins = union_find
-        .into_iter()
-        .enumerate()
-        .filter(|(i, c)| c.parent == *i)
-        .map(|c| c.1.size);
-    let result: usize = basins.map(Reverse).k_smallest(3).map(|r| r.0).product();
-    println!("{}", result);
+    let basins = union_find.into_iter().enumerate().filter(|(i, c)| c.parent == *i).collect_vec();
+    let part1: u64 = basins.iter().map(|c| (1 + c.1.lowest) as u64).sum();
+    let part2: usize =
+        basins.iter().map(|c| Reverse(c.1.size)).k_smallest(3).map(|r| r.0).product();
+    println!("part1: {}", part1);
+    println!("part2: {}", part2);
     Ok(())
 }

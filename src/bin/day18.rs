@@ -83,9 +83,8 @@ fn add_fish(mut l: SnailFish, r: &SnailFish) -> SnailFish {
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day18.txt")?;
-    let lines = input.trim().split('\n');
     let fish: Vec<SnailFish> =
-        lines.map(|l| Ok(parse_fish(l.trim().as_bytes(), 0)?.0)).try_collect()?;
+        input.lines().map(|l| Ok(parse_fish(l.as_bytes(), 0)?.0)).try_collect()?;
 
     let final_value = fish.iter().cloned().reduce(|l, r| add_fish(l, &r)).map(magnitude);
     let pairs = fish.iter().tuple_combinations().flat_map(|(l, r)| [(l, r), (r, l)]);

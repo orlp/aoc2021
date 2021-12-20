@@ -20,9 +20,9 @@ fn extract_basin(x: i64, y: i64, w: i64, h: i64, heights: &mut [u8]) -> Option<(
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day09.txt")?;
-    let w = input.split_once('\n').context("no newline")?.0.len() as i64;
-    let h = input.trim().split('\n').count() as i64;
-    let mut heights = input.split('\n').flat_map(|l| l.bytes().map(|b| b - b'0')).collect_vec();
+    let w = input.split_once('\n').context("no newline")?.0.trim().len() as i64;
+    let h = input.trim().lines().count() as i64;
+    let mut heights = input.lines().flat_map(|l| l.bytes().map(|b| b - b'0')).collect_vec();
 
     let mut basins = itertools::iproduct!(0..w, 0..h)
         .flat_map(|(x, y)| extract_basin(x, y, w, h, &mut heights))

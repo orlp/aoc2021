@@ -2,7 +2,7 @@ use anyhow::{Context, Ok, Result};
 use itertools::Itertools;
 
 fn decode_hex(s: &str) -> Result<Vec<u8>> {
-    let byte_pairs = s.as_bytes().chunks(2).map(|b| std::str::from_utf8(b));
+    let byte_pairs = s.as_bytes().chunks(2).map(std::str::from_utf8);
     let mut bytes: Vec<u8> = byte_pairs.map(|p| Ok(u8::from_str_radix(p?, 16)?)).try_collect()?;
     if s.len() % 2 != 0 {
         *bytes.last_mut().unwrap() <<= 4;

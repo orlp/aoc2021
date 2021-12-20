@@ -37,7 +37,7 @@ fn dijkstra_cross_grid(grid: &[u8], width: i64, height: i64, repeats: i64) -> Op
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day15.txt")?;
-    let grid = input.split('\n').flat_map(|l| l.trim().bytes().map(|b| b - b'0')).collect_vec();
+    let grid = input.lines().flat_map(|l| l.bytes().map(|b| b - b'0')).collect_vec();
     let width = input.split_once('\n').context("no newline")?.0.trim().len() as i64;
     let height = (grid.len() / width as usize) as i64;
 

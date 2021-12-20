@@ -15,7 +15,7 @@ fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day13.txt")?;
     let mut first_fold = true;
     let mut coords: HashSet<(i64, i64)> = HashSet::new();
-    for line in input.trim().split('\n').filter(|l| l.trim().len() > 0) {
+    for line in input.trim().lines().filter(|l| l.trim().len() > 0) {
         if let Some((x, y)) = line.split_once(",") {
             coords.insert((x.parse()?, y.parse()?));
         } else {
