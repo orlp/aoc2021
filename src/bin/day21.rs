@@ -34,7 +34,7 @@ fn main() -> Result<()> {
     // Bottom-up dynamic programming on the occurrence count.
     // State space: scores: [0, 21)^2, positions: [0, 10)^2, turn: [0, 1].
     let idx = |p1_score, p2_score, turn, p1_pos, p2_pos| {
-        (p1_score + 21 * (p2_score + 21 * (turn as u64 + 2 * (p1_pos + 10 * p2_pos)))) as usize
+        (p1_pos + 10 * (p2_pos + 10 * (turn as u64 + 2 * (p1_score + 21 * p2_score)))) as usize
     };
     let mut partial_counts = vec![0u64; 21 * 21 * 10 * 10 * 2];
     partial_counts[idx(0, 0, 0, p1 - 1, p2 - 1)] = 1;
