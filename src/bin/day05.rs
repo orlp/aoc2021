@@ -3,6 +3,7 @@ use std::cmp;
 use anyhow::{Context, Ok, Result};
 use itertools::Either::{Left, Right};
 use itertools::Itertools;
+use hashbrown::HashMap;
 
 
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
@@ -23,8 +24,11 @@ fn interpolate(p: Point, q: Point) -> impl Iterator<Item = Point> {
 }
 
 fn num_intersections(lines: impl IntoIterator<Item = (Point, Point)>) -> usize {
-    let grid = lines.into_iter().flat_map(|(p, q)| interpolate(p, q)).counts();
-    grid.into_values().filter(|n| *n >= 2).count()
+    let mut grid = HashMap::new();
+    for p in lines.into_iter().flat_map(|(p, q)| interpolate(p, q)) {
+        *grid.entry(p).or_insert(0) += 1;
+    }
+    grid.values().filter(|n| **n >= 2).count()
 }
 
 fn main() -> Result<()> {

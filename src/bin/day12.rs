@@ -1,5 +1,5 @@
 use std::borrow::Cow;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 use anyhow::{Context, Ok, Result};
 use itertools::Either;
@@ -37,7 +37,7 @@ fn count_paths<'a>(
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day12.txt")?;
     let start_time = std::time::Instant::now();
-    let mut node_ids: HashMap<&str, usize> = HashMap::from([("start", START), ("end", END)]);
+    let mut node_ids: HashMap<&str, usize> = [("start", START), ("end", END)].into_iter().collect();
     let mut edgelist: Vec<Vec<usize>> = vec![Vec::new(), Vec::new()];
     let mut big_node: Vec<bool> = vec![false, false];
     for line in input.lines() {

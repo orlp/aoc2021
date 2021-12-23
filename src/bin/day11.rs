@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use hashbrown::HashSet;
 
 use anyhow::{Context, Result};
 use itertools::Itertools;

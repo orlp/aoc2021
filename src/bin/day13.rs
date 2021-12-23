@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use hashbrown::HashSet;
 use std::fmt::Write;
 
 use anyhow::{Context, Result};

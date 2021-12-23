@@ -1,5 +1,6 @@
 use std::cmp::Reverse;
-use std::collections::{BinaryHeap, HashMap};
+use std::collections::BinaryHeap;
+use hashbrown::HashMap;
 
 use anyhow::{Context, Result};
 use itertools::Itertools;
