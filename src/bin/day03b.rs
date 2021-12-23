@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 
 use anyhow::{Context, Result};
-use itertools::{Itertools, partition};
+use itertools::{partition, Itertools};
 
 
 fn partition_recursive<'a>(v: &mut [&'a str], i: usize, keep_most_common: bool) -> Option<&'a str> {
