@@ -83,12 +83,14 @@ fn add_fish(mut l: SnailFish, r: &SnailFish) -> SnailFish {
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day18.txt")?;
+    let start = std::time::Instant::now();
     let fish: Vec<SnailFish> =
         input.lines().map(|l| Ok(parse_fish(l.as_bytes(), 0)?.0)).try_collect()?;
 
     let final_value = fish.iter().cloned().reduce(|l, r| add_fish(l, &r)).map(magnitude);
     let pairs = fish.iter().tuple_combinations().flat_map(|(l, r)| [(l, r), (r, l)]);
     let max_sum = pairs.map(|(l, r)| magnitude(add_fish(l.clone(), r))).max();
+    println!("time: {:?}", start.elapsed());
     println!("part 1: {}", final_value.context("no snailfish")?);
     println!("part 2: {}", max_sum.context("no snailfish")?);
     Ok(())

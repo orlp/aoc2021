@@ -1,6 +1,3 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
-
 use anyhow::{Context, Ok, Result};
 
 fn parse_digit_segments(s: &str) -> u8 {
@@ -43,15 +40,16 @@ fn decode_display<I: IntoIterator<Item = u8> + Clone>(digits: I, display: I) -> 
 }
 
 fn main() -> Result<()> {
-    let input = BufReader::new(File::open("inputs/day08.txt")?);
+    let input = std::fs::read_to_string("inputs/day08.txt")?;
+    let start = std::time::Instant::now();
     let displays = input.lines().map(|line| {
-        let line = line?;
         let (digits, display) = line.split_once(" | ").context("invalid line")?;
         let [digits, display] = [digits, display].map(|s| s.split(' ').map(parse_digit_segments));
         Ok(decode_display(digits, display))
     });
 
-    println!("{}", itertools::process_results(displays, |it| it.sum::<usize>())?);
-
+    let answer = itertools::process_results(displays, |it| it.sum::<usize>())?;
+    println!("time: {:?}", start.elapsed());
+    println!("{}", answer);
     Ok(())
 }

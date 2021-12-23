@@ -6,6 +6,7 @@ use anyhow::Result;
 
 fn main() -> Result<()> {
     let input = BufReader::new(File::open("inputs/day10.txt")?);
+    let start = std::time::Instant::now();
     let illegal_points = HashMap::from([(b')', 3u64), (b']', 57), (b'}', 1197), (b'>', 25137)]);
     let closer_points = HashMap::from([(b'(', 1u64), (b'[', 2), (b'{', 3), (b'<', 4)]);
     let openers = HashMap::from([(b')', b'('), (b']', b'['), (b'}', b'{'), (b'>', b'<')]);
@@ -33,7 +34,9 @@ fn main() -> Result<()> {
     }
 
     let num_incomplete = incomplete_scores.len();
+    let part2 = incomplete_scores.select_nth_unstable(num_incomplete / 2).1;
+    println!("time: {:?}", start.elapsed());
     println!("part1: {}", total_illegal_score);
-    println!("part2: {}", incomplete_scores.select_nth_unstable(num_incomplete / 2).1);
+    println!("part2: {}", part2);
     Ok(())
 }

@@ -5,6 +5,7 @@ use itertools::Itertools;
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day11.txt")?;
+    let start = std::time::Instant::now();
     let width = input.lines().next().context("no lines")?.len() as isize;
     let mut energy_levels = input
         .lines()
@@ -39,6 +40,7 @@ fn main() -> Result<()> {
         }
     }
 
+    println!("time: {:?}", start.elapsed());
     println!("part1: {}", total100 + 100usize.saturating_sub(step) / 9);
     println!("part2: {}", step);
     Ok(())

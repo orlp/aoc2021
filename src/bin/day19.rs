@@ -57,6 +57,7 @@ fn window_diffs(scanner: &[Point], k: usize) -> impl Iterator<Item = (usize, Poi
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day19.txt")?;
+    let start = std::time::Instant::now();
     let mut scanners: Vec<Vec<Point>> = Vec::new();
     for line in input.lines().map(|l| l.trim()).filter(|l| !l.is_empty()) {
         if line.starts_with("--- scanner") {
@@ -113,6 +114,7 @@ fn main() -> Result<()> {
 
     let scanner_dists =
         iproduct!(&scanner_positions, &scanner_positions).map(|(p, q)| manhattan_dist(*p, *q));
+    println!("time: {:?}", start.elapsed());
     println!("part1: {}", refscan.len());
     println!("part2: {}", scanner_dists.max().context("no scanners")?);
     Ok(())

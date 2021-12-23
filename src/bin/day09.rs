@@ -20,6 +20,7 @@ fn extract_basin(x: i64, y: i64, w: i64, h: i64, heights: &mut [u8]) -> Option<(
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day09.txt")?;
+    let start = std::time::Instant::now();
     let w = input.split_once('\n').context("no newline")?.0.trim().len() as i64;
     let h = input.trim().lines().count() as i64;
     let mut heights = input.lines().flat_map(|l| l.bytes().map(|b| b - b'0')).collect_vec();
@@ -32,6 +33,7 @@ fn main() -> Result<()> {
     let part1: u64 = basins.iter().map(|(_size, lowest)| (1 + lowest) as u64).sum();
     let largest_basins = basins.select_nth_unstable(num_basins.saturating_sub(4)).2;
     let part2: Option<u64> = largest_basins.iter().map(|(size, _lowest)| *size).product1();
+    println!("time: {:?}", start.elapsed());
     println!("part1: {}", part1);
     println!("part2: {}", part2.context("no basins found")?);
     Ok(())

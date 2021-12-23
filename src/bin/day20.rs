@@ -33,6 +33,7 @@ fn simulate(algo: &[bool], img: Vec<Vec<bool>>, infinity: bool) -> (Vec<Vec<bool
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day20.txt")?;
+    let start = std::time::Instant::now();
     let (algo, image) = input.split_once('\n').context("no newline")?;
     let algo: Vec<bool> = parse_pixels(algo).try_collect()?;
     let image = image.trim().lines().map(|l| Ok(parse_pixels(l).try_collect()?)).try_collect()?;
@@ -40,10 +41,14 @@ fn main() -> Result<()> {
     let mut state = (image, false);
     state = simulate(&algo, state.0, state.1);
     state = simulate(&algo, state.0, state.1);
-    println!("part1: {}", state.0.iter().flatten().map(|x| *x as u64).sum::<u64>());
+    let part1 = state.0.iter().flatten().map(|x| *x as u64).sum::<u64>();
     for _ in 2..50 {
         state = simulate(&algo, state.0, state.1);
     }
-    println!("part2: {}", state.0.iter().flatten().map(|x| *x as u64).sum::<u64>());
+    let part2 = state.0.iter().flatten().map(|x| *x as u64).sum::<u64>();
+
+    println!("time: {:?}", start.elapsed());
+    println!("part1: {}", part1);
+    println!("part2: {}", part2);
     Ok(())
 }

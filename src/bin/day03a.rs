@@ -1,13 +1,11 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
-
 use anyhow::{Context, Ok, Result};
 use itertools::Itertools;
 
 
 fn main() -> Result<()> {
-    let input = BufReader::new(File::open("inputs/day03.txt")?);
-    let lines: Vec<String> = input.lines().map(|l| Ok(l?)).try_collect()?;
+    let input = std::fs::read_to_string("inputs/day03.txt")?;
+    let start = std::time::Instant::now();
+    let lines = input.lines().collect_vec();
     let w = lines.first().context("empty input")?.len();
     let n = lines.len() as u64;
 
@@ -25,6 +23,7 @@ fn main() -> Result<()> {
     }
     let epsilon = (!gamma) & ((1 << w) - 1);
 
+    println!("time: {:?}", start.elapsed());
     println!("{}", epsilon * gamma);
     Ok(())
 }

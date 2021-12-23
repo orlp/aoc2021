@@ -38,9 +38,12 @@ fn solve(polymer: &[u8], rules: &HashMap<(u8, u8), u8>, steps: usize) -> usize {
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day14.txt")?;
+    let start = std::time::Instant::now();
     let (polymer, rest) = input.split_once('\n').context("could not get polymer")?;
     let rules = rest.trim().lines().map(parse_rule).try_collect()?;
-    println!("{}", solve(polymer.trim().as_bytes(), &rules, 10));
-    println!("{}", solve(polymer.trim().as_bytes(), &rules, 40));
+    let [part1, part2] = [10, 40].map(|steps| solve(polymer.trim().as_bytes(), &rules, steps));
+    println!("time: {:?}", start.elapsed());
+    println!("{}", part1);
+    println!("{}", part2);
     Ok(())
 }

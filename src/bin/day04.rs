@@ -19,6 +19,7 @@ fn winning_time(board: &[u64], width: usize, draw_time: &HashMap<u64, usize>) ->
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day04.txt")?;
+    let start = std::time::Instant::now();
     let (drawline, rest) = input.split_once('\n').context("no newline")?;
 
     let draws: Vec<u64> = drawline.split(',').map(|s| s.parse()).try_collect()?;
@@ -35,7 +36,9 @@ fn main() -> Result<()> {
     let score = |(win_t, board): (usize, &[u64])| {
         draws[win_t] * board.iter().filter(|x| draw_t[x] > win_t).sum::<u64>()
     };
-    println!("part1: {}", score(min));
-    println!("part2: {}", score(max));
+    let (part1, part2) = (score(min), score(max));
+    println!("time: {:?}", start.elapsed());
+    println!("part1: {}", part1);
+    println!("part2: {}", part2);
     Ok(())
 }

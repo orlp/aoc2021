@@ -37,11 +37,14 @@ fn dijkstra_cross_grid(grid: &[u8], width: i64, height: i64, repeats: i64) -> Op
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day15.txt")?;
+    let start = std::time::Instant::now();
     let grid = input.lines().flat_map(|l| l.bytes().map(|b| b - b'0')).collect_vec();
     let width = input.split_once('\n').context("no newline")?.0.trim().len() as i64;
     let height = (grid.len() / width as usize) as i64;
 
-    println!("part 1: {}", dijkstra_cross_grid(&grid, width, height, 1).context("no path")?);
-    println!("part 2: {}", dijkstra_cross_grid(&grid, width, height, 5).context("no path")?);
+    let [part1, part2] = [1, 5].map(|repeats| dijkstra_cross_grid(&grid, width, height, repeats));
+    println!("time: {:?}", start.elapsed());
+    println!("part 1: {}", part1.context("no path")?);
+    println!("part 2: {}", part2.context("no path")?);
     Ok(())
 }

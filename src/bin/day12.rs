@@ -36,6 +36,7 @@ fn count_paths<'a>(
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day12.txt")?;
+    let start = std::time::Instant::now();
     let mut edges: HashMap<&str, Vec<&str>> = HashMap::new();
     for line in input.trim().lines() {
         let (a, b) = line.trim().split_once('-').context("line contains no edge")?;
@@ -44,7 +45,9 @@ fn main() -> Result<()> {
     }
 
     let mut seen = HashSet::from(["start"]);
-    println!("{}", count_paths("start", "end", &edges, &mut seen, false));
-    println!("{}", count_paths("start", "end", &edges, &mut seen, true));
+    let [part1, part2] = [false, true].map(|t| count_paths("start", "end", &edges, &mut seen, t));
+    println!("time: {:?}", start.elapsed());
+    println!("{}", part1);
+    println!("{}", part2);
     Ok(())
 }

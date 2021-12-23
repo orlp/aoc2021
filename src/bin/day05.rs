@@ -1,6 +1,4 @@
 use std::cmp;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
 
 use anyhow::{Context, Ok, Result};
 use itertools::Either::{Left, Right};
@@ -30,11 +28,11 @@ fn num_intersections(lines: impl IntoIterator<Item = (Point, Point)>) -> usize {
 }
 
 fn main() -> Result<()> {
-    let input = BufReader::new(File::open("inputs/day05.txt")?);
+    let input = std::fs::read_to_string("inputs/day05.txt")?;
+    let start = std::time::Instant::now();
     let lines: Vec<(Point, Point)> = input
         .lines()
         .map(|line| {
-            let line = line?;
             let (from, to) = line.split_once(" -> ").context("invalid line")?;
             let (x1, y1) = from.split_once(",").context("invalid point")?;
             let (x2, y2) = to.split_once(",").context("invalid point")?;
@@ -43,7 +41,9 @@ fn main() -> Result<()> {
         .try_collect()?;
 
     let axis_aligned = lines.iter().copied().filter(|(p, q)| p.0 == q.0 || p.1 == q.1);
-    println!("part1: {}", num_intersections(axis_aligned));
-    println!("part2: {}", num_intersections(lines));
+    let (part1, part2) = (num_intersections(axis_aligned), num_intersections(lines));
+    println!("time: {:?}", start.elapsed());
+    println!("part1: {}", part1);
+    println!("part2: {}", part2);
     Ok(())
 }

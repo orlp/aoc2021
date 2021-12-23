@@ -5,6 +5,7 @@ use regex::Regex;
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day21.txt")?;
+    let start = std::time::Instant::now();
     let re =
         Regex::new(r"Player 1 starting position:\s*(\d)\s*Player 2 starting position:\s*(\d)\s*")?;
     let parsed = re.captures(&input).context("could not parse input")?;
@@ -23,7 +24,7 @@ fn main() -> Result<()> {
             break;
         }
     }
-    println!("part1: {}", turn * 3 * scores[(turn % 2) as usize]);
+    let part1 = turn * 3 * scores[(turn % 2) as usize];
 
 
     let throws = iproduct!(1..=3, 1..=3, 1..=3).map(|t| t.0 + t.1 + t.2);
@@ -62,6 +63,8 @@ fn main() -> Result<()> {
             }
         }
     }
+    println!("time: {:?}", start.elapsed());
+    println!("part1: {}", part1);
     println!("part2: {}", wins[0].max(wins[1]));
     Ok(())
 }

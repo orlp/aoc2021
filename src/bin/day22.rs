@@ -44,6 +44,7 @@ fn on_volume(cuboids: impl Iterator<Item = ([i64; 6], bool)>) -> i64 {
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day22.txt")?;
+    let start = std::time::Instant::now();
     let re = Regex::new(r"(on|off) x=(-?\d+)..(-?\d+),y=(-?\d+)..(-?\d+),z=(-?\d+)..(-?\d+)")?;
     let cuboids: Vec<([i64; 6], bool)> = input
         .lines()
@@ -60,7 +61,9 @@ fn main() -> Result<()> {
         .iter()
         .filter(|(coords, _)| coords.iter().all(|x| -50 <= *x && *x <= 50))
         .copied();
-    println!("part1: {:?}", on_volume(part1_cuboids));
-    println!("part2: {:?}", on_volume(cuboids.into_iter()));
+    let (part1, part2) = (on_volume(part1_cuboids), on_volume(cuboids.into_iter()));
+    println!("time: {:?}", start.elapsed());
+    println!("part1: {:?}", part1);
+    println!("part2: {:?}", part2);
     Ok(())
 }

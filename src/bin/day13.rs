@@ -1,6 +1,7 @@
 use std::collections::HashSet;
+use std::fmt::Write;
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 
 
 fn apply_fold(fold: i64, coord: i64) -> i64 {
@@ -13,8 +14,10 @@ fn apply_fold(fold: i64, coord: i64) -> i64 {
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day13.txt")?;
+    let start = std::time::Instant::now();
     let mut first_fold = true;
     let mut coords: HashSet<(i64, i64)> = HashSet::new();
+    let mut part1 = None;
     for line in input.trim().lines().filter(|l| l.trim().len() > 0) {
         if let Some((x, y)) = line.split_once(",") {
             coords.insert((x.parse()?, y.parse()?));
@@ -27,18 +30,22 @@ fn main() -> Result<()> {
                 coords = coords.into_iter().map(|(x, y)| (x, apply_fold(fy, y))).collect();
             }
             if first_fold {
-                println!("part 1: {}", coords.len());
+                part1 = Some(coords.len());
                 first_fold = false;
             }
         }
     }
 
-    println!("part 2:");
+    let mut part2 = String::new();
     let width = coords.iter().map(|(x, _y)| *x).max().unwrap_or(0);
     let height = coords.iter().map(|(_x, y)| *y).max().unwrap_or(0);
     for y in 0..=height {
         let line = (0..=width).map(|x| if coords.contains(&(x, y)) { "#" } else { " " });
-        println!("{}", String::from_iter(line));
+        writeln!(part2, "{}", String::from_iter(line))?;
     }
+
+    println!("time: {:?}", start.elapsed());
+    println!("part 1: {}", part1.context("no folds")?);
+    println!("part 2:\n{}", part2);
     Ok(())
 }

@@ -97,10 +97,13 @@ fn parse_state<const N: usize>(s: &str) -> [u8; N] {
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day23.txt")?;
+    let start = std::time::Instant::now();
     let mut part2_input = input.lines().collect_vec();
     part2_input.splice(3..3, ["#D#C#B#A#", "#D#B#A#C#"]);
     let part1 = dijkstra_fuel_cost(parse_state::<{ 11 + 2 * 4 }>(&input));
     let part2 = dijkstra_fuel_cost(parse_state::<{ 11 + 4 * 4 }>(&part2_input.join("")));
+
+    println!("time: {:?}", start.elapsed());
     println!("part1: {}", part1.context("no part 1 solution")?);
     println!("part2: {}", part2.context("no part 2 solution")?);
     Ok(())

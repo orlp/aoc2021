@@ -73,9 +73,11 @@ fn parse_packet(bytes: &[u8], bits_read: &mut usize) -> Result<(u64, u64)> {
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day16.txt")?;
+    let start = std::time::Instant::now();
     let bytes = decode_hex(input.trim())?;
     let mut bits_read = 0;
     let (version_sum, value) = parse_packet(&bytes, &mut bits_read)?;
+    println!("time: {:?}", start.elapsed());
     println!("part1: {:?}", version_sum);
     println!("part2: {:?}", value);
     Ok(())

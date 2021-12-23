@@ -30,9 +30,11 @@ fn cost(positions: &[i64], a: i64) -> i64 {
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day07.txt")?;
+    let start = std::time::Instant::now();
     let positions: Vec<i64> = input.trim().split(',').map(str::parse).try_collect()?;
     let mean_floor = positions.iter().sum::<i64>() / positions.len() as i64;
     let fuel_cost = cmp::min(cost(&positions, mean_floor), cost(&positions, mean_floor + 1));
+    println!("time: {:?}", start.elapsed());
     println!("{}", fuel_cost);
     Ok(())
 }

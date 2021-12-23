@@ -1,12 +1,10 @@
 use std::cmp::Ordering;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
 
 use anyhow::{Context, Result};
-use itertools::partition;
+use itertools::{Itertools, partition};
 
 
-fn partition_recursive(v: &mut [String], i: usize, keep_most_common: bool) -> Option<String> {
+fn partition_recursive<'a>(v: &mut [&'a str], i: usize, keep_most_common: bool) -> Option<&'a str> {
     if v.len() <= 1 {
         return v.get(0).cloned();
     }
@@ -24,11 +22,14 @@ fn partition_recursive(v: &mut [String], i: usize, keep_most_common: bool) -> Op
 }
 
 fn main() -> Result<()> {
-    let input = BufReader::new(File::open("inputs/day03.txt")?);
-    let mut lines = input.lines().map(|l| Ok(l?)).collect::<Result<Vec<_>>>()?;
+    let input = std::fs::read_to_string("inputs/day03.txt")?;
+    let start = std::time::Instant::now();
+    let mut lines = input.lines().collect_vec();
     let oxygen = partition_recursive(&mut lines[..], 0, true).context("could not find oxygen")?;
     let co2_scrubber =
         partition_recursive(&mut lines[..], 0, false).context("could not find co2 scrubber")?;
-    println!("{}", u64::from_str_radix(&oxygen, 2)? * u64::from_str_radix(&co2_scrubber, 2)?);
+    let answer = u64::from_str_radix(&oxygen, 2)? * u64::from_str_radix(&co2_scrubber, 2)?;
+    println!("time: {:?}", start.elapsed());
+    println!("{}", answer);
     Ok(())
 }

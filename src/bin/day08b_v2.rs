@@ -1,6 +1,4 @@
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
 
 use anyhow::{Context, Ok, Result};
 use itertools::Itertools;
@@ -23,9 +21,9 @@ fn main() -> Result<()> {
         (37, 5), (41, 6), (25, 7), (49, 8), (45, 9),
     ]);
 
-    let input = BufReader::new(File::open("inputs/day08.txt")?);
+    let input = std::fs::read_to_string("inputs/day08.txt")?;
+    let start = std::time::Instant::now();
     let displays = input.lines().map(|line| {
-        let line = line?;
         let (unique, display) = line.split_once(" | ").context("invalid line")?;
         let unique_counts = unique.bytes().counts();
         Ok(display
@@ -34,6 +32,8 @@ fn main() -> Result<()> {
             .fold(0, |sum, digit| 10 * sum + digit))
     });
 
-    println!("{}", itertools::process_results(displays, |it| it.sum::<usize>())?);
+    let answer = itertools::process_results(displays, |it| it.sum::<usize>())?;
+    println!("time: {:?}", start.elapsed());
+    println!("{}", answer);
     Ok(())
 }

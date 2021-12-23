@@ -49,6 +49,7 @@ fn union(mut a: usize, mut b: usize, nodes: &mut [UnionFindNode]) -> usize {
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day09.txt")?;
+    let start = std::time::Instant::now();
 
     let mut union_find = Vec::new();
     let mut prev_row = Vec::new();
@@ -79,6 +80,7 @@ fn main() -> Result<()> {
     let part1: u64 = basins.iter().map(|c| (1 + c.1.lowest) as u64).sum();
     let part2: usize =
         basins.iter().map(|c| Reverse(c.1.size)).k_smallest(3).map(|r| r.0).product();
+    println!("time: {:?}", start.elapsed());
     println!("part1: {}", part1);
     println!("part2: {}", part2);
     Ok(())

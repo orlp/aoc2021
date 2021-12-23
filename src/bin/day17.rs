@@ -28,6 +28,7 @@ fn bound_triangular_steps(v: i64, min: i64, max: i64) -> (i64, i64) {
 
 fn main() -> Result<()> {
     let input = std::fs::read_to_string("inputs/day17.txt")?;
+    let start = std::time::Instant::now();
     let re = Regex::new(r"target area: x=(-?\d+)..(-?\d+), y=(-?\d+)..(-?\d+)")?;
     let caps = re.captures(&input).context("area not found")?;
     let bounds = caps.iter().skip(1).flatten().map(|c| c.as_str().parse::<i64>());
@@ -71,6 +72,7 @@ fn main() -> Result<()> {
         open_ranges[is_x as usize].push(Reverse(hi));
     }
 
+    println!("time: {:?}", start.elapsed());
     println!("part1: {}", global_y_peak);
     println!("part2: {}", intersections);
     Ok(())
