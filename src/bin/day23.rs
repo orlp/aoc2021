@@ -43,19 +43,10 @@ fn gen_moves<const N: usize>(state: &[u8; N], moves: &mut Vec<(usize, usize, usi
             if let Some(occupied_idx) = room_first_occupied[room] {
                 let target_room = room_states[room][occupied_idx] as usize - 1;
 
-                // Will this move cut off access irrecoverably?
-                let deadlock = room_states[target_room].iter().any(|s| {
-                    *s > 0 && {
-                        let required_path =
-                            symm_range(2 + 2 * target_room, 2 + 2 * (*s - 1) as usize);
-                        required_path.contains(&hallway)
-                    }
-                });
-
                 // To reduce superfluous nodes if we're moving directly to our target
                 // room, only ever take 1 step.
                 let direct_route = symm_range(2 + 2 * room, 2 + 2 * target_room).contains(&hallway);
-                if !(direct_route && path_len > 2) && !deadlock && unobstructed() {
+                if !(direct_route && path_len > 2) && unobstructed() {
                     moves.push((room_start(room) + occupied_idx, hallway, path_len + occupied_idx));
                 }
             }
