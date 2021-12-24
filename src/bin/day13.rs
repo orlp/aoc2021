@@ -1,7 +1,7 @@
-use hashbrown::HashSet;
 use std::fmt::Write;
 
 use anyhow::{Context, Result};
+use hashbrown::HashSet;
 
 
 fn apply_fold(fold: i64, coord: i64) -> i64 {

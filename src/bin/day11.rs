@@ -1,6 +1,5 @@
-use hashbrown::HashSet;
-
 use anyhow::{Context, Result};
+use hashbrown::HashSet;
 use itertools::Itertools;
 
 fn main() -> Result<()> {

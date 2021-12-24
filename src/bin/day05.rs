@@ -1,9 +1,9 @@
 use std::cmp;
 
 use anyhow::{Context, Ok, Result};
+use hashbrown::HashMap;
 use itertools::Either::{Left, Right};
 use itertools::Itertools;
-use hashbrown::HashMap;
 
 
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]

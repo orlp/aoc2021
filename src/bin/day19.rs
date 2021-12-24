@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
-use hashbrown::{HashMap, HashSet};
 
 use anyhow::{Context, Ok, Result};
+use hashbrown::{HashMap, HashSet};
 use itertools::{iproduct, Itertools};
 
 type Point = [i32; 3];

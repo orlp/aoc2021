@@ -1,7 +1,7 @@
 use std::borrow::Cow;
-use hashbrown::HashMap;
 
 use anyhow::{Context, Ok, Result};
+use hashbrown::HashMap;
 use itertools::Either;
 
 const START: usize = 0;
