@@ -7,7 +7,7 @@ use itertools::Itertools;
 
 
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-struct Point(i64, i64);
+struct Point(i16, i16);
 
 fn interpolate(p: Point, q: Point) -> impl Iterator<Item = Point> {
     let symmetric_range = |a, b| {
