@@ -10,25 +10,30 @@ fn parse_pixels(line: &str) -> impl Iterator<Item = Result<bool>> + '_ {
     })
 }
 
-fn simulate(algo: &[bool], img: Vec<Vec<bool>>, infinity: bool) -> (Vec<Vec<bool>>, bool) {
-    let (w, h) = (img[0].len() as i32, img.len() as i32);
-    let neighborhood_bitvec = |x, y| {
-        let mut idx = 0;
-        for (dy, dx) in itertools::iproduct!([-1, 0, 1], [-1, 0, 1]) {
-            idx <<= 1;
-            if 0 <= x + dx && x + dx < w && 0 <= y + dy && y + dy < h {
-                idx |= img[(y + dy) as usize][(x + dx) as usize] as usize;
-            } else {
-                idx |= infinity as usize;
-            }
-        }
-        idx
-    };
+fn simulate(algo: &[bool], img: Vec<bool>, width: usize, infinity: bool) -> (Vec<bool>, usize, bool) {
+    let (w, h) = (width as i64, (img.len() / width) as i64);
+    let mut new_img = vec![false; ((w + 2) * (h + 2)) as usize];
 
-    let new_img = (0..h + 2)
-        .map(|y| (0..w + 2).map(|x| algo[neighborhood_bitvec(x - 1, y - 1)]).collect_vec())
-        .collect_vec();
-    (new_img, algo[511 * infinity as usize])
+    let mut prev_row = vec![511 * infinity as usize; width + 2];
+    for y in 0..h + 2 {
+        for x in 0..w + 2 {
+            let mut idx = prev_row[x as usize];
+            for dx in [-2, -1, 0] {
+                idx <<= 1;
+                if 0 <= x + dx && x + dx < w && 0 <= y && y < h {
+                    idx |= img[(y*w + x + dx) as usize] as usize;
+                } else {
+                    idx |= infinity as usize;
+                }
+            }
+            idx &= 511;
+
+            new_img[(y*(w + 2) + x) as usize] = algo[idx];
+            prev_row[x as usize] = idx;
+        }
+    }
+
+    (new_img, width + 2, algo[511 * infinity as usize])
 }
 
 fn main() -> Result<()> {
@@ -36,16 +41,18 @@ fn main() -> Result<()> {
     let start = std::time::Instant::now();
     let (algo, image) = input.split_once('\n').context("no newline")?;
     let algo: Vec<bool> = parse_pixels(algo).try_collect()?;
-    let image = image.trim().lines().map(|l| Ok(parse_pixels(l).try_collect()?)).try_collect()?;
+    let image: Vec<Vec<bool>> = image.trim().lines().map(|l| Ok(parse_pixels(l).try_collect()?)).try_collect()?;
+    let width = image[0].len();
+    let flat_image = image.into_iter().flatten().collect_vec();
 
-    let mut state = (image, false);
-    state = simulate(&algo, state.0, state.1);
-    state = simulate(&algo, state.0, state.1);
-    let part1 = state.0.iter().flatten().map(|x| *x as u64).sum::<u64>();
+    let mut state = (flat_image, width, false);
+    state = simulate(&algo, state.0, state.1, state.2);
+    state = simulate(&algo, state.0, state.1, state.2);
+    let part1 = state.0.iter().map(|x| *x as u64).sum::<u64>();
     for _ in 2..50 {
-        state = simulate(&algo, state.0, state.1);
+        state = simulate(&algo, state.0, state.1, state.2);
     }
-    let part2 = state.0.iter().flatten().map(|x| *x as u64).sum::<u64>();
+    let part2 = state.0.iter().map(|x| *x as u64).sum::<u64>();
 
     println!("time: {:?}", start.elapsed());
     println!("part1: {}", part1);
