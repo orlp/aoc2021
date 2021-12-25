@@ -9,11 +9,7 @@ fn step(cucumbers: &mut Vec<u8>, width: usize) -> bool {
             let ny = ((y + dy) % height) * width;
             for x in 0..width {
                 let i = y * width + x;
-                let j = if x + dx == width {
-                    ny
-                } else {
-                    ny + x + dx
-                };
+                let j = if x + dx == width { ny } else { ny + x + dx };
                 if cucumbers[i] == kind && cucumbers[j] == b'.' {
                     new[i] = b'.';
                     new[j] = kind;

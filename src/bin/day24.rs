@@ -58,7 +58,7 @@ fn find_sat_input(
                     if let Some(sat) = find_sat_input(code, new_regs, ip + 1, known_bad, min) {
                         return Some(10 * sat + input as u64);
                     }
-                };
+                }
                 known_bad[init_ip as usize].insert(init_regs);
                 return None;
             },
@@ -112,18 +112,12 @@ fn main() -> Result<()> {
     let mut cache = vec![Cache::new(); instructions.len()];
     let part1 = find_sat_input(&instructions, [0; 4], 0, &mut cache, false);
     println!("part1 time: {:?}", p1start.elapsed());
-    println!(
-        "part1: {}",
-        part1.context("no solution")?.to_string().chars().rev().join("")
-    );
+    println!("part1: {}", part1.context("no solution")?.to_string().chars().rev().join(""));
     let p2start = std::time::Instant::now();
     let mut known_bad = vec![Cache::new(); instructions.len()];
     let part2 = find_sat_input(&instructions, [0; 4], 0, &mut known_bad, true);
     println!("part2 time: {:?}", p2start.elapsed());
-    println!(
-        "part2: {}",
-        part2.context("no solution")?.to_string().chars().rev().join("")
-    );
+    println!("part2: {}", part2.context("no solution")?.to_string().chars().rev().join(""));
     println!("time: {:?}", start.elapsed());
     Ok(())
 }
