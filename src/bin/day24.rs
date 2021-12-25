@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
 use derive_more::TryInto;
-use hashbrown::HashMap;
+// use rayon::prelude::*;
+use hashbrown::HashSet;
 use itertools::Itertools;
 
 type Word = i32;
@@ -34,32 +35,32 @@ impl Operand {
 
 const INPUTS: [[i32; 9]; 2] = [[9, 8, 7, 6, 5, 4, 3, 2, 1], [1, 2, 3, 4, 5, 6, 7, 8, 9]];
 
-type Cache = HashMap<RegFile, Option<u64>>;
+type Cache = HashSet<RegFile>;
 fn find_sat_input(
     code: &[Instr],
     mut regs: RegFile,
     mut ip: u32,
-    caches: &mut [Cache],
+    known_bad: &mut [Cache],
     min: bool,
 ) -> Option<u64> {
     let (init_regs, init_ip) = (regs, ip);
-    if let Some(ret) = caches[init_ip as usize].get(&init_regs) {
-        return *ret;
+    if known_bad[init_ip as usize].contains(&init_regs) {
+        return None;
     }
 
     while let Some(instr) = code.get(ip as usize) {
         match instr {
             Instr::Inp(dst) => {
-                let mut res = None;
+                // for input in INPUTS[min as usize] {
                 for input in INPUTS[min as usize] {
-                    regs[*dst as usize] = input;
-                    if let Some(sat) = find_sat_input(code, regs, ip + 1, caches, min) {
-                        res = Some(10 * sat + input as u64);
-                        break;
+                    let mut new_regs = regs;
+                    new_regs[*dst as usize] = input;
+                    if let Some(sat) = find_sat_input(code, new_regs, ip + 1, known_bad, min) {
+                        return Some(10 * sat + input as u64);
                     }
-                }
-                caches[init_ip as usize].insert(init_regs, res);
-                return res;
+                };
+                known_bad[init_ip as usize].insert(init_regs);
+                return None;
             },
             Instr::Add(dst, src) => regs[*dst as usize] += src.value(&regs),
             Instr::Mul(dst, src) => regs[*dst as usize] *= src.value(&regs),
@@ -73,7 +74,9 @@ fn find_sat_input(
     }
 
     let res = (regs[3] == 0).then(|| 0);
-    caches[init_ip as usize].insert(init_regs, res);
+    if res.is_none() {
+        known_bad[init_ip as usize].insert(init_regs);
+    }
     res
 }
 
@@ -114,8 +117,8 @@ fn main() -> Result<()> {
         part1.context("no solution")?.to_string().chars().rev().join("")
     );
     let p2start = std::time::Instant::now();
-    let mut cache = vec![Cache::new(); instructions.len()];
-    let part2 = find_sat_input(&instructions, [0; 4], 0, &mut cache, true);
+    let mut known_bad = vec![Cache::new(); instructions.len()];
+    let part2 = find_sat_input(&instructions, [0; 4], 0, &mut known_bad, true);
     println!("part2 time: {:?}", p2start.elapsed());
     println!(
         "part2: {}",
