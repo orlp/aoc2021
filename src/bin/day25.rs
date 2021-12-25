@@ -5,10 +5,15 @@ fn step(cucumbers: &mut Vec<u8>, width: usize) -> bool {
     let mut stuck = true;
     for (dx, dy, kind) in [(1, 0, b'>'), (0, 1, b'v')] {
         let mut new = cucumbers.clone();
-        for y in (0..height).rev() {
-            for x in (0..width).rev() {
+        for y in 0..height {
+            let ny = ((y + dy) % height) * width;
+            for x in 0..width {
                 let i = y * width + x;
-                let j = (y + dy) % height * width + (x + dx) % width;
+                let j = if x + dx == width {
+                    ny
+                } else {
+                    ny + x + dx
+                };
                 if cucumbers[i] == kind && cucumbers[j] == b'.' {
                     new[i] = b'.';
                     new[j] = kind;
